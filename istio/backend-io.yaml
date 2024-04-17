@@ -1,0 +1,183 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  profile: default
+  meshConfig:
+    trustDomain: backend.com
+    trustDomainAliases:
+    - frontend.com
+    defaultConfig:
+      proxyMetadata:
+        # Enable basic DNS proxying
+        ISTIO_META_DNS_CAPTURE: "true"
+        # Enable automatic address allocation, optional
+        ISTIO_META_DNS_AUTO_ALLOCATE: "true"
+    accessLogFile: /dev/stdout
+
+  components:
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: false
+      label:
+        istio: ingressgateway
+        spiffe.io/spire-managed-identity: "true"
+      k8s:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 40Mi
+        overlays:
+        - apiVersion: apps/v1
+          kind: Deployment
+          name: istio-ingressgateway
+          patches:
+          - path: spec.template.spec.volumes.[name:workload-socket]
+            value:
+              name: workload-socket
+              csi:
+                driver: "csi.spiffe.io"
+                readOnly: true
+          - path: spec.template.spec.containers.[name:istio-proxy].volumeMounts.[name:workload-socket]
+            value:
+              name: workload-socket
+              mountPath: "/run/secrets/workload-spiffe-uds"
+              readOnly: true
+          - path: spec.template.spec.initContainers
+            value:
+            - name: wait-for-spire-socket
+              image: busybox:1.28
+              volumeMounts:
+              - name: workload-socket
+                mountPath: /run/secrets/workload-spiffe-uds
+                readOnly: true
+              env:
+              - name: CHECK_FILE
+                value: /run/secrets/workload-spiffe-uds/socket
+              command:
+              - sh
+              - "-c"
+              - |-
+                echo "$(date -Iseconds)" Waiting for: ${CHECK_FILE}
+                while [[ ! -e ${CHECK_FILE} ]] ; do
+                  echo "$(date -Iseconds)" File does not exist: ${CHECK_FILE}
+                  sleep 15
+                done
+                ls -l ${CHECK_FILE}
+    - name: istio-egressgateway
+      enabled: false
+    - name: istio-eastwestgateway
+      label:
+        istio: eastwestgateway
+        app: istio-eastwestgateway
+        topology.istio.io/network: backend-network
+        spiffe.io/spire-managed-identity: "true"
+      enabled: true
+      k8s:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 40Mi
+        env:
+        # traffic through this gateway should be routed inside the network
+        - name: ISTIO_META_REQUESTED_NETWORK_VIEW
+          value: backend-network
+        service:
+          ports:
+          - name: status-port
+            port: 15021
+            targetPort: 15021
+          - name: tls
+            port: 15443
+            targetPort: 15443
+          - name: tls-istiod
+            port: 15012
+            targetPort: 15012
+          - name: tls-webhook
+            port: 15017
+            targetPort: 15017
+        overlays:
+        - apiVersion: apps/v1
+          kind: Deployment
+          name: istio-eastwestgateway
+          patches:
+          - path: spec.template.spec.volumes.[name:workload-socket]
+            value:
+              name: workload-socket
+              csi:
+                driver: "csi.spiffe.io"
+                readOnly: true
+          - path: spec.template.spec.containers.[name:istio-proxy].volumeMounts.[name:workload-socket]
+            value:
+              name: workload-socket
+              mountPath: "/run/secrets/workload-spiffe-uds"
+              readOnly: true
+          - path: spec.template.spec.initContainers
+            value:
+            - name: wait-for-spire-socket
+              image: busybox:1.28
+              volumeMounts:
+              - name: workload-socket
+                mountPath: /run/secrets/workload-spiffe-uds
+                readOnly: true
+              env:
+              - name: CHECK_FILE
+                value: /run/secrets/workload-spiffe-uds/socket
+              command:
+              - sh
+              - "-c"
+              - |-
+                echo "$(date -Iseconds)" Waiting for: ${CHECK_FILE}
+                while [[ ! -e ${CHECK_FILE} ]] ; do
+                  echo "$(date -Iseconds)" File does not exist: ${CHECK_FILE}
+                  sleep 15
+                done
+                ls -l ${CHECK_FILE}
+    pilot:
+      k8s:
+        env:
+        #   # Disable istiod CA Sever functionality
+        #   - name: ENABLE_CA_SERVER
+        #     value: "false"
+          - name: PILOT_TRACE_SAMPLING
+            value: "100"
+        resources:
+          requests:
+            cpu: 10m
+            memory: 100Mi
+
+  values:
+    global:
+      # caAddress: https://172.18.255.121:8443
+      meshID: fleetman
+      multiCluster:
+        clusterName: backend
+      network: backend-network
+      proxy:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 40Mi
+    sidecarInjectorWebhook:
+      templates:
+        spire: |
+          spec:
+            containers:
+            - name: istio-proxy
+              volumeMounts:
+              - name: workload-socket
+                mountPath: /run/secrets/workload-spiffe-uds
+                readOnly: true
+            volumes:
+              - name: workload-socket
+                csi:
+                  driver: "csi.spiffe.io"
+                  readOnly: true
+
+    pilot:
+      autoscaleEnabled: false
+
+    gateways:
+      istio-egressgateway:
+        autoscaleEnabled: false
+      istio-ingressgateway:
+        autoscaleEnabled: false
