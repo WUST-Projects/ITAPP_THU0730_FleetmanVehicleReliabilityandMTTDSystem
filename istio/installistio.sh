@@ -43,7 +43,7 @@ kubectl --context="${CLUSTER1_CTX}" apply -n istio-system -f auth.yaml
 echo "Installing istio in $CLUSTER2_NAME..."
 # Install gateway crds
 kubectl --context="${CLUSTER2_CTX}" apply -f gateway-crds.yaml
-kubectl --context="${CLUSTER2_CTX}" label namespace istio-system topology.istio.io/network=backend-network
+kubectl --context="${CLUSTER2_CTX}" label namespace istio-system topology.istio.io/network=fleetman
 
 istioctl --context="${CLUSTER2_CTX}" install -f backend-io.yaml --skip-confirmation
 
