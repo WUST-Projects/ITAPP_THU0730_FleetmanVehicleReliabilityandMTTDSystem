@@ -17,7 +17,7 @@ spec:
   components:
     ingressGateways:
     - name: istio-ingressgateway
-      enabled: true
+      enabled: false
       label:
         istio: ingressgateway
         spiffe.io/spire-managed-identity: "true"
