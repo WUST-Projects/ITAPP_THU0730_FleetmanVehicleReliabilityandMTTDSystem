@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: queue
+        spiffe.io/spire-managed-identity: "true"
+      annotations:
+        inject.istio.io/templates: "sidecar,spire"
     spec:
       containers:
       - name: queue
@@ -30,6 +33,9 @@ spec:
     metadata:
       labels:
         app: position-simulator
+        spiffe.io/spire-managed-identity: "true"
+      annotations:
+        inject.istio.io/templates: "sidecar,spire"
     spec:
       containers:
       - name: position-simulator
@@ -52,6 +58,9 @@ spec:
     metadata:
       labels:
         app: position-tracker
+        spiffe.io/spire-managed-identity: "true"
+      annotations:
+        inject.istio.io/templates: "sidecar,spire"
     spec:
       containers:
       - name: position-tracker
@@ -73,6 +82,9 @@ spec:
     metadata:
       labels:
         app: api-gateway
+        spiffe.io/spire-managed-identity: "true"
+      annotations:
+        inject.istio.io/templates: "sidecar,spire"
     spec:
       containers:
       - name: api-gateway
@@ -95,6 +107,9 @@ spec:
     metadata:
       labels:
         app: webapp
+        spiffe.io/spire-managed-identity: "true"
+      annotations:
+        inject.istio.io/templates: "sidecar,spire"
     spec:
       containers:
       - name: webapp

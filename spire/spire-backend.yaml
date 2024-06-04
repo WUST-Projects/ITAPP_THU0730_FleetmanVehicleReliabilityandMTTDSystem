@@ -224,6 +224,12 @@ data:
       }
     }
 
+    telemetry {
+      Prometheus {
+        port = 8088
+      }
+    }
+
     plugins {
       DataStore "sql" {
         plugin_data {
