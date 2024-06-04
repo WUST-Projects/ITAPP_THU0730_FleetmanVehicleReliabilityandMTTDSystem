@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -12,13 +13,6 @@ spec:
       app: prometheus-server
   template:
     metadata:
-      # annotations:
-      #   traffic.sidecar.istio.io/includeInboundPorts: ""   # do not intercept any inbound ports
-      #   traffic.sidecar.istio.io/includeOutboundIPRanges: ""  # do not intercept any outbound traffic
-      #   proxy.istio.io/config: |  # configure an env variable `OUTPUT_CERTS` to write certificates to the given folder
-      #     proxyMetadata:
-      #       OUTPUT_CERTS: /etc/istio-output-certs
-      #   sidecar.istio.io/userVolumeMount: '[{"name": "istio-certs", "mountPath": "/etc/istio-output-certs"}]' # mount the shared volume at sidecar proxy
       labels:
         app: prometheus-server
         spiffe.io/spire-managed-identity: "true"
@@ -26,9 +20,6 @@ spec:
         inject.istio.io/templates: "sidecar,spire"
         traffic.sidecar.istio.io/includeInboundPorts: ""   # do not intercept any inbound ports
         traffic.sidecar.istio.io/includeOutboundIPRanges: "" # do not intercept any outbound traffic
-        # proxy.istio.io/config: |  # configure an env variable `OUTPUT_CERTS` to write certificates to the given folder
-        #   proxyMetadata:
-        #     OUTPUT_CERTS: /etc/istio-output-certs
     spec:
       containers:
         - name: prometheus
@@ -58,3 +49,18 @@ spec:
             name: prometheus-server-conf
         - name: prometheus-storage-volume
           emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-server
+  namespace: monitoring
+spec:
+  selector: 
+    app: prometheus-server
+  type: NodePort  
+  ports:
+    - port: 9090
+      targetPort: 9090
+      nodePort: 31030
