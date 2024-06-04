@@ -17,6 +17,7 @@ data:
           severity: slack
         annotations:
           summary: High Memory Usage
+          runbook_url: https://runbook.com
   prometheus.yml: |-
     global:
       scrape_interval: 5s
@@ -92,15 +93,15 @@ data:
         static_configs:
           - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
       # Add scrape job for spire server and agent
-      - job_name: 'spire-server'
-        metrics_path: '/'
-        static_configs:
-        - targets: ['spire-server.spire.svc.cluster.local:8088']
+      # - job_name: 'spire-server'
+      #   metrics_path: '/'
+      #   static_configs:
+      #   - targets: ['spire-server.spire.svc.cluster.local:8088']
 
-      - job_name: 'spire-agent'
-        metrics_path: '/'
-        static_configs:
-        - targets: ['spire-agent.spire.svc.cluster.local:8089']
+      # - job_name: 'spire-agent'
+      #   metrics_path: '/'
+      #   static_configs:
+      #   - targets: ['spire-agent.spire.svc.cluster.local:8089']
       - job_name: 'kubernetes-cadvisor'
         scheme: https
         tls_config:

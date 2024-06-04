@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ../config.sh
+. config.sh
 
 echo "$CLUSTER1_NAME Eastwest Gateways LB IP address..."
 echo $(kubectl \

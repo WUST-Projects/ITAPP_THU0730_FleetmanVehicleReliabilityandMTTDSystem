@@ -224,11 +224,11 @@ data:
       }
     }
 
-    telemetry {
-      Prometheus {
-        port = 8088
-      }
-    }
+    # telemetry {
+    #   Prometheus {
+    #     port = 8088
+    #   }
+    # }
 
     plugins {
       DataStore "sql" {

@@ -11,3 +11,5 @@ kubectl apply -f prometheus-config.yaml
 kubectl apply -f prometheus-deployment.yaml
 # Install kube-state-metrics
 kubectl -n kube-system apply -f kube-state-metrics/
+# Install alert manager components
+kubectl apply -f alert-manager/

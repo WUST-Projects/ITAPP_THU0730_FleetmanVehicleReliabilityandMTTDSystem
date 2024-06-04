@@ -14,4 +14,4 @@ kubectl -n default apply -f services.yaml
 # Install frontend app
 # kubectl config use-context ${CLUSTER1_CTX}
 # kubectl label ns default istio-injection=enabled --overwrite
-# kubectl -n default apply -f webapps.yaml
+# kubectl -n default apply -f webapp.yaml
