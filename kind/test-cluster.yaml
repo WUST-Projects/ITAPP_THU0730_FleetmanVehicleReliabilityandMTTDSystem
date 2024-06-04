@@ -3,8 +3,12 @@ apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
 - role: worker
-- role: worker
-- role: worker
+  kubeadmConfigPatches:
+    - |
+      kind: InitConfiguration
+      nodeRegistration:
+        kubeletExtraArgs:
+          system-reserved: memory=100Mi
 networking:
   ipFamily: ipv4  #default is ipv4
   disableDefaultCNI: true

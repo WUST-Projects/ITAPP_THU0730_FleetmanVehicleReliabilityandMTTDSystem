@@ -4,7 +4,7 @@
 
 # Create cluster1 cluster
 echo "Creating cluster $CLUSTER1_NAME..."
-kind create cluster --name $CLUSTER1_NAME --config cluster.yaml
+kind create cluster --name $CLUSTER1_NAME --config test-cluster.yaml
 
 
 # Create cluster2 cluster
