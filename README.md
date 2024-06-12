@@ -1,3 +1,22 @@
+# DOCUMENTATION FOR FLEETMAN VEHICLE FLEET MANAGEMENT MTTD REDUCTION PROJECT
+
+FleetmanVehicle is a vehicle fleet management company which provides important information to its clients concerning the state of their fleet. This information consists of the routes taken by vehicles, vehicle positions, and better route management to avoid delays. The vehicles are supposed to have a physical device attached to them which transmit data to the base station for processing and subsequent feedback to its different clients. This physical device was replaced by the position-simulator micro-service. The base station contains a queuing system (ActiveMQ), API gateway, and position tracker micro-services. The client had access to a front-end, the webapp, where their fleet are visualized.
+
+## Table of Content
+
+- [DOCUMENTATION FOR FLEETMAN VEHICLE FLEET MANAGEMENT MTTD REDUCTION PROJECT](#documentation-for-fleetman-vehicle-fleet-management-mttd-reduction-project)
+- [Table of Content](#table-of-content)
+- [Introduction](#introduction)
+- [Architectural Diagram](#architectural-diagram)
+- [Deployment Information](#deployment-information)
+    - [Steps to Install/Deploy](#steps-to-installdeploy)
+- [Hardware/Software Requirements](#hardwaresoftware-requirements)
+- [Visualizing Results](#visualizing-results)
+
+## Introduction
+
+The project focuses on reducing the Mean Time to Detection (MTTD) for issues in Fleetman’s vehicle fleet management system. This involves deploying a microservice application on a Kubernetes cluster and integrating various tools for enhanced security, monitoring, and alerting.
+
 ## Architectural Diagram
 
 The first part to the implementation of this project started with a mind mapping of the various aspect the project consists of. This provided the basic framework on which the main implementation was based off on. The diagram depicting this mind mapping is shown in the figure below.
@@ -63,10 +82,10 @@ To visualize the results after completing the implementation steps above, follow
     - kubectl port-forward \<grafana-pod-name> 8082:3000
     - Open your browser and type localhost:8082
 
-![Alt text](docs-image/grafana-dashboard.png)
+![Alt text](docs-image/grafana-dashboard.png "Grafana dashboard view")
 
 - Kiali: Run the below commands
     - kubectl config set-context --current --namespace monitoring
     - istioctl dashboard kiali. This will automatically open kiali dashboard on the browser.
 
-![Alt text](docs-image/kiali.png)
+![Alt text](docs-image/kiali.png "Kiali dashboard View")
