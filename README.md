@@ -25,7 +25,7 @@ The first part to the implementation of this project started with a mind mapping
 
 Subsequently, after the implementation, the architectural diagram for the fully implemented solution was developed. The diagram depicting this is shown below.
 
-![Alt text](docs-image/architecture.drawio "Architectural Diagram")
+![Alt text](docs-image/architecture.svg "Architectural Diagram")
 
 ## Deployment Information
 
