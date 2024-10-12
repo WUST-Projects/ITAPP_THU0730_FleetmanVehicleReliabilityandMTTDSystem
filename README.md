@@ -89,3 +89,7 @@ To visualize the results after completing the implementation steps above, follow
     - istioctl dashboard kiali. This will automatically open kiali dashboard on the browser.
 
 ![Alt text](docs-image/kiali.png "Kiali dashboard View")
+
+## Final Remark
+
+Working on this project provided me with great experience to explore what was tenable
